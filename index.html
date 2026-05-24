@@ -8166,6 +8166,7 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     setTimeout(() => {
@@ -8234,11 +8235,6 @@ window.addEventListener('load', function() {
                 let card = document.createElement('div');
                 card.id = cardId;
                 
-                let variantWrapper = projectsCarousel.closest('.ssr-variant');
-                if (variantWrapper) {
-                    card.className = variantWrapper.className;
-                }
-                
                 card.style.cssText = "background: #0a0a0a; border: 1px solid #1e3a5f; border-radius: 20px; padding: 40px 20px; margin: 40px auto; width: 90%; max-width: 600px; text-align: center; font-family: Inter, sans-serif; color: white; position: relative; z-index: 10; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.15);";
                 card.innerHTML =                     '<div style="display:inline-block; border: 1px solid #0ea5e9; color: #0ea5e9; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px; background: rgba(14, 165, 233, 0.1);">' +
                         '✨ EXCLUSIVE OFFER' +
@@ -8250,10 +8246,12 @@ window.addEventListener('load', function() {
                     '</p>' +
                     '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #0ea5e9; color: #fff; text-decoration: none; font-weight: bold; padding: 16px 32px; border-radius: 30px; font-size: 16px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);">Claim Your Free Edit →</a>';
                 
+                // Find the SSR variant wrapper (the child of projectsCarousel that handles visibility)
+                let variantWrapper = projectsCarousel.querySelector('.ssr-variant');
                 if (variantWrapper) {
-                    variantWrapper.parentNode.insertBefore(card, variantWrapper.nextSibling);
+                    variantWrapper.appendChild(card);
                 } else {
-                    projectsCarousel.parentNode.insertBefore(card, projectsCarousel.nextSibling);
+                    projectsCarousel.appendChild(card);
                 }
             }
         });
