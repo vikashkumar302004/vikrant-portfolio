@@ -8168,6 +8168,7 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     setTimeout(() => {
@@ -8186,17 +8187,20 @@ window.addEventListener('load', function() {
             let variantWrapper = projectsCarousel.querySelector('.ssr-variant');
             if (!variantWrapper) return;
             
-            // Hide the original Framer section so React can't break our layout when hydrating
+            // Instead of display: none which crashes React/Framer, we make it invisible but keep it in DOM
             let originalSection = variantWrapper.querySelector('section');
             if (originalSection) {
-                originalSection.style.display = 'none';
+                originalSection.style.position = 'absolute';
+                originalSection.style.opacity = '0';
+                originalSection.style.pointerEvents = 'none';
+                originalSection.style.zIndex = '-9999';
             }
             
             let customCarouselId = 'custom-carousel-' + index;
             if (!document.getElementById(customCarouselId)) {
                 let myCarousel = document.createElement('div');
                 myCarousel.id = customCarouselId;
-                myCarousel.style.cssText = 'display: flex; flex-direction: row; overflow-x: auto; gap: 20px; padding: 10px 0; width: 100%;';
+                myCarousel.style.cssText = 'display: flex; flex-direction: row; overflow-x: auto; gap: 20px; padding: 10px 0; width: 100%; position: relative; z-index: 5;';
                 
                 videoIds.forEach(id => {
                     let li = document.createElement('div');
