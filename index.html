@@ -8163,57 +8163,75 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
     display: none !important;
 }
 </style>
+
 <script>
 window.addEventListener('load', function() {
     setTimeout(() => {
-        let articles = [];
-        document.querySelectorAll('iframe[src*="youtube"]').forEach(iframe => {
-            let art = iframe.closest('article');
-            if (art && !articles.includes(art)) {
-                articles.push(art);
+        let carousels = document.querySelectorAll('div[data-framer-name="Projects Carousel"]');
+        
+        carousels.forEach((projectsCarousel, index) => {
+            let iframes = projectsCarousel.querySelectorAll('iframe[src*="youtube"]');
+            let articles = [];
+            iframes.forEach(iframe => {
+                let art = iframe.closest('article');
+                if (art && !articles.includes(art)) articles.push(art);
+            });
+
+            if (articles.length > 0) {
+                let firstArticle = articles[0];
+                
+                if (!firstArticle.hasAttribute('data-video-added')) {
+                    firstArticle.setAttribute('data-video-added', 'true');
+                    
+                    let iframe = firstArticle.querySelector('iframe');
+                    if (iframe) {
+                        iframe.src = 'https://www.youtube.com/embed/2xWIUDQCpWU?autoplay=1&mute=1&loop=1&playlist=2xWIUDQCpWU&controls=1';
+                        iframe.style.display = 'block'; 
+                        iframe.style.zIndex = '999';
+                    }
+                    let img = firstArticle.querySelector('img[src*="i.ytimg.com"]');
+                    if (img) img.style.display = 'none';
+                }
+                
+                for (let i = 1; i < articles.length; i++) {
+                    let cell = articles[i].closest('li') || articles[i];
+                    cell.style.display = 'none';
+                }
+                
+                projectsCarousel.querySelectorAll('.framer--carousel-controls, fieldset[aria-label="Carousel pagination controls"]').forEach(el => {
+                    el.style.display = 'none';
+                });
+                
+                let firstLi = firstArticle.closest('li');
+                if (firstLi) {
+                    firstLi.style.width = '100%';
+                    firstLi.style.minWidth = '300px';
+                    let ul = firstLi.closest('ul');
+                    if (ul) {
+                        ul.style.display = 'flex';
+                        ul.style.justifyContent = 'center';
+                    }
+                }
+            }
+
+            let cardId = 'exclusive-offer-card-' + index;
+            if (!document.getElementById(cardId)) {
+                let card = document.createElement('div');
+                card.id = cardId;
+                card.style.cssText = "background: #0a0a0a; border: 1px solid #333; border-radius: 20px; padding: 40px 20px; margin: 40px auto; width: 90%; max-width: 600px; text-align: center; font-family: Inter, sans-serif; color: white; position: relative; z-index: 10;";
+                card.innerHTML =                     '<div style="display:inline-block; border: 1px solid #D4AF37; color: #D4AF37; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">' +
+                        '✨ EXCLUSIVE OFFER' +
+                    '</div>' +
+                    '<h2 style="font-size: 32px; font-weight: 500; margin: 0 0 5px 0;">Your First Edit is</h2>' +
+                    '<h2 style="font-size: 32px; font-weight: 500; font-style: italic; color: #D4AF37; margin: 0 0 20px 0;">Absolutely Free</h2>' +
+                    '<p style="color: #999; font-size: 16px; line-height: 1.6; margin-bottom: 30px; font-weight: 300;">' +
+                        'Experience the cinematic quality and retention-focused styling of VK Editorial at zero risk. Let us prove our value on your first project before you commit.' +
+                    '</p>' +
+                    '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #D4AF37; color: #000; text-decoration: none; font-weight: bold; padding: 16px 32px; border-radius: 30px; font-size: 16px; transition: opacity 0.2s;">Claim Your Free Edit →</a>';
+                
+                projectsCarousel.parentNode.insertBefore(card, projectsCarousel.nextSibling);
             }
         });
-        
-        if (articles.length > 0) {
-            let firstArticle = articles[0];
-            
-            if (!firstArticle.hasAttribute('data-video-added')) {
-                firstArticle.setAttribute('data-video-added', 'true');
-                
-                let iframe = firstArticle.querySelector('iframe');
-                if (iframe) {
-                    iframe.src = 'https://www.youtube.com/embed/2xWIUDQCpWU?autoplay=1&mute=1&loop=1&playlist=2xWIUDQCpWU&controls=1';
-                    iframe.style.display = 'block'; 
-                    iframe.style.zIndex = '999';
-                }
-                let img = firstArticle.querySelector('img[src*="i.ytimg.com"]');
-                if (img) img.style.display = 'none';
-
-            }
-            
-            // Hide the rest of the videos
-            for (let i = 1; i < articles.length; i++) {
-                let cell = articles[i].closest('li') || articles[i];
-                cell.style.display = 'none';
-            }
-            
-            // Hide carousel controls
-            document.querySelectorAll('.framer--carousel-controls, fieldset[aria-label="Carousel pagination controls"]').forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // Fix any weird container width/layout issues for the first item
-            let firstLi = firstArticle.closest('li');
-            if (firstLi) {
-                firstLi.style.width = '100%';
-                firstLi.style.minWidth = '300px';
-                let ul = firstLi.closest('ul');
-                if (ul) {
-                    ul.style.display = 'flex';
-                    ul.style.justifyContent = 'center';
-                }
-            }
-        }
     }, 1500);
 });
 
@@ -8224,7 +8242,6 @@ window.addEventListener('load', function() {
             let text = node.textContent;
             if (!text) return;
             
-            // Restore email
             if (text.includes('agencyvision@gmail.com') || text.includes('jubairvision@gmail.com') || text.includes('Vijaypantt3@gamil.com')) {
                 node.textContent = 'Vijaypantt3@gamil.com';
                 return;
@@ -8243,18 +8260,15 @@ window.addEventListener('load', function() {
         } else if (node.nodeType === Node.ELEMENT_NODE) {
             if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return;
             
-            // Fix links
             if (node.tagName === 'A') {
                 let href = node.href || '';
                 let t = node.textContent ? node.textContent.trim().toLowerCase() : '';
                 
-                // Contact Me -> WhatsApp
                 if (t.includes('contact me') || t === 'contact') {
                     node.href = 'https://wa.me/918272062017';
                     node.target = '_blank';
                 }
                 
-                // Other socials -> hide or replace if they are old instagram links
                 if (href.includes('instagram.com') && !href.includes('vk.editorial_')) {
                     node.href = 'https://www.instagram.com/vk.editorial_?igsh=MTJyZXBjdmVpOHRoaQ%3D%3D&utm_source=qr';
                 }
@@ -8267,12 +8281,10 @@ window.addEventListener('load', function() {
         }
     }
 
-    // Interval without MutationObserver to avoid React crashes
     setInterval(() => {
         replaceTextNode(document.body);
     }, 500);
     
-    // Initial run
     setTimeout(() => {
         replaceTextNode(document.body);
     }, 100);
