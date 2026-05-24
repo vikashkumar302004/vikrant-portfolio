@@ -8173,6 +8173,7 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     // Inject global CSS to enforce layout and prevent React hydration from breaking it
@@ -8231,6 +8232,7 @@ window.addEventListener('load', function() {
         div[data-framer-name="Primary"] svg {
             color: #0ea5e9 !important;
             --21h8s6: #0ea5e9 !important;
+            fill: #0ea5e9 !important;
         }
         /* The circle shape in the process badge */
         div[data-framer-name="circle"],
@@ -8238,10 +8240,14 @@ window.addEventListener('load', function() {
         div[data-framer-name="icon shape"] > div {
             background-color: #0ea5e9 !important;
         }
-        /* Force 'Recent Works' arrow to be ocean blue */
-        .framer-wsr6yk-container svg {
-            color: #0ea5e9 !important;
-            --21h8s6: #0ea5e9 !important;
+        /* Force 'Recent Works' arrow to be ocean blue using a CSS filter! */
+        /* This works by hue-rotating yellow (48deg) to ocean blue (199deg) -> +151deg */
+        .framer-wsr6yk-container {
+            filter: hue-rotate(151deg) saturate(1.5) brightness(1.1) !important;
+        }
+        /* Also target any hardcoded SVGs inside */
+        .framer-wsr6yk-container svg * {
+            stroke: #0ea5e9 !important;
         }
         /* Globally force Framer's primary color variables to Ocean Blue just to catch any remaining yellow */
         :root, body, [class*="framer-"] {
