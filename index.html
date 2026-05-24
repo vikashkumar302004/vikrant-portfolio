@@ -8171,6 +8171,7 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     // Inject global CSS to enforce layout and prevent React hydration from breaking it
@@ -8214,6 +8215,22 @@ window.addEventListener('load', function() {
         }
         /* Change all SVG symbols (like yellow bulbs) to Ocean Blue */
         svg {
+            --21h8s6: #0ea5e9 !important;
+        }
+        /* Force 'services' badge text and icon to be ocean blue */
+        div[data-framer-name="services"] p,
+        div[data-framer-name="services"] span {
+            color: #0ea5e9 !important;
+            --framer-text-color: #0ea5e9 !important;
+            --extracted-r6o4lv: #0ea5e9 !important;
+        }
+        div[data-framer-name="services"] svg {
+            color: #0ea5e9 !important;
+            --21h8s6: #0ea5e9 !important;
+        }
+        /* Force 'Recent Works' arrow to be ocean blue */
+        .framer-wsr6yk-container svg {
+            color: #0ea5e9 !important;
             --21h8s6: #0ea5e9 !important;
         }
     `;
