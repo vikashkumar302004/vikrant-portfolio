@@ -8172,6 +8172,7 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     // Inject global CSS to enforce layout and prevent React hydration from breaking it
@@ -8217,20 +8218,34 @@ window.addEventListener('load', function() {
         svg {
             --21h8s6: #0ea5e9 !important;
         }
-        /* Force 'services' badge text and icon to be ocean blue */
+        /* Force 'services' and 'Primary' badges (like process) to be ocean blue */
         div[data-framer-name="services"] p,
-        div[data-framer-name="services"] span {
+        div[data-framer-name="services"] span,
+        div[data-framer-name="Primary"] p,
+        div[data-framer-name="Primary"] span {
             color: #0ea5e9 !important;
             --framer-text-color: #0ea5e9 !important;
             --extracted-r6o4lv: #0ea5e9 !important;
         }
-        div[data-framer-name="services"] svg {
+        div[data-framer-name="services"] svg,
+        div[data-framer-name="Primary"] svg {
             color: #0ea5e9 !important;
             --21h8s6: #0ea5e9 !important;
+        }
+        /* The circle shape in the process badge */
+        div[data-framer-name="circle"],
+        div[data-framer-name="circle container"],
+        div[data-framer-name="icon shape"] > div {
+            background-color: #0ea5e9 !important;
         }
         /* Force 'Recent Works' arrow to be ocean blue */
         .framer-wsr6yk-container svg {
             color: #0ea5e9 !important;
+            --21h8s6: #0ea5e9 !important;
+        }
+        /* Globally force Framer's primary color variables to Ocean Blue just to catch any remaining yellow */
+        :root, body, [class*="framer-"] {
+            --extracted-r6o4lv: #0ea5e9 !important;
             --21h8s6: #0ea5e9 !important;
         }
     `;
