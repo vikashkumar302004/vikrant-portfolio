@@ -8168,14 +8168,18 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     // Inject global CSS to enforce layout and prevent React hydration from breaking it
     let style = document.createElement('style');
     style.textContent = `
-        div[data-framer-name="Projects Carousel"] img[src*="i.ytimg.com"] {
+        /* Hide ALL placeholder images and Framer play buttons over the videos */
+        div[data-framer-name="Projects Carousel"] article img,
+        div[data-framer-name="Projects Carousel"] article button {
             display: none !important;
         }
+        /* Force iframes to be visible and cover the whole area */
         div[data-framer-name="Projects Carousel"] iframe {
             display: block !important;
             opacity: 1 !important;
@@ -8185,6 +8189,7 @@ window.addEventListener('load', function() {
             height: 100% !important;
             border-radius: 12px !important;
         }
+        /* Ensure the carousel layout is correct */
         div[data-framer-name="Projects Carousel"] ul {
             display: flex !important;
             flex-direction: row !important;
@@ -8214,17 +8219,28 @@ window.addEventListener('load', function() {
 
     let videoIds = ['3CFqZRUOt20', 'OSdH3bAWy8E', 'OpEXtkDVsiM', 'A-BArb92av8'];
     
-    setInterval(() => {
-        // Hide old videos
-        document.querySelectorAll('iframe[src*="youtube"]').forEach(iframe => {
-            if (!iframe.closest('div[data-framer-name="Projects Carousel"]')) {
-                let container = iframe.closest('article') || iframe.closest('div');
-                if (container) container.style.display = 'none';
-            }
-        });
+    // Create the Exclusive Offer Card as a FLOATING element so it NEVER breaks layout
+    let cardId = 'exclusive-offer-card-global';
+    if (!document.getElementById(cardId)) {
+        let card = document.createElement('div');
+        card.id = cardId;
+        card.style.cssText = "position: fixed; bottom: 30px; right: 30px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); border: 1px solid #1e3a5f; border-radius: 20px; padding: 25px; width: 320px; text-align: center; font-family: Inter, sans-serif; color: white; z-index: 999999; box-shadow: 0 15px 40px rgba(14, 165, 233, 0.3); animation: slideUp 0.5s ease-out;";
+        card.innerHTML = 
+            '<div style="display:inline-block; border: 1px solid #0ea5e9; color: #0ea5e9; padding: 6px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; letter-spacing: 1px; margin-bottom: 15px; background: rgba(14, 165, 233, 0.1);">' +
+                '✨ EXCLUSIVE OFFER' +
+            '</div>' +
+            '<h2 style="font-size: 24px; font-weight: 500; margin: 0 0 5px 0;">Your First Edit is</h2>' +
+            '<h2 style="font-size: 24px; font-weight: 500; font-style: italic; color: #0ea5e9; margin: 0 0 15px 0; text-shadow: 0 0 15px rgba(14, 165, 233, 0.4);">Absolutely Free</h2>' +
+            '<p style="color: #a0aec0; font-size: 14px; line-height: 1.5; margin-bottom: 20px; font-weight: 300;">' +
+                'Experience the cinematic quality of VK Editorial risk-free.' +
+            '</p>' +
+            '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #0ea5e9; color: #fff; text-decoration: none; font-weight: bold; padding: 12px 24px; border-radius: 30px; font-size: 14px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);">Claim Free Edit →</a>';
+        document.body.appendChild(card);
+    }
 
+    setInterval(() => {
         let carousels = document.querySelectorAll('div[data-framer-name="Projects Carousel"]');
-        carousels.forEach((projectsCarousel, index) => {
+        carousels.forEach((projectsCarousel) => {
             let ul = projectsCarousel.querySelector('ul');
             if (!ul) return;
             let lis = Array.from(ul.querySelectorAll('li'));
@@ -8241,35 +8257,15 @@ window.addEventListener('load', function() {
                     return;
                 }
                 let iframe = li.querySelector('iframe');
-                let expectedSrc = 'https://www.youtube.com/embed/' + videoIds[i] + '?autoplay=1&mute=1&loop=1&playlist=' + videoIds[i] + '&controls=1';
-                if (iframe && iframe.src !== expectedSrc) {
-                    iframe.src = expectedSrc;
+                if (iframe) {
+                    let expectedSrc = 'https://www.youtube.com/embed/' + videoIds[i] + '?autoplay=1&mute=1&loop=1&playlist=' + videoIds[i] + '&controls=1';
+                    // Use dataset to prevent infinite reloading due to browser rewriting URLs slightly
+                    if (iframe.dataset.injectedSrc !== expectedSrc) {
+                        iframe.src = expectedSrc;
+                        iframe.dataset.injectedSrc = expectedSrc;
+                    }
                 }
             });
-            
-            let cardId = 'exclusive-offer-card-' + index;
-            if (!document.getElementById(cardId)) {
-                let card = document.createElement('div');
-                card.id = cardId;
-                card.style.cssText = "background: #0a0a0a; border: 1px solid #1e3a5f; border-radius: 20px; padding: 40px 20px; margin: 40px auto; width: 90%; max-width: 600px; text-align: center; font-family: Inter, sans-serif; color: white; position: relative; z-index: 10; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.15);";
-                card.innerHTML = 
-                    '<div style="display:inline-block; border: 1px solid #0ea5e9; color: #0ea5e9; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px; background: rgba(14, 165, 233, 0.1);">' +
-                        '✨ EXCLUSIVE OFFER' +
-                    '</div>' +
-                    '<h2 style="font-size: 32px; font-weight: 500; margin: 0 0 5px 0;">Your First Edit is</h2>' +
-                    '<h2 style="font-size: 32px; font-weight: 500; font-style: italic; color: #0ea5e9; margin: 0 0 20px 0; text-shadow: 0 0 15px rgba(14, 165, 233, 0.4);">Absolutely Free</h2>' +
-                    '<p style="color: #a0aec0; font-size: 16px; line-height: 1.6; margin-bottom: 30px; font-weight: 300;">' +
-                        'Experience the cinematic quality and retention-focused styling of VK Editorial at zero risk. Let us prove our value on your first project before you commit.' +
-                    '</p>' +
-                    '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #0ea5e9; color: #fff; text-decoration: none; font-weight: bold; padding: 16px 32px; border-radius: 30px; font-size: 16px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);">Claim Your Free Edit →</a>';
-                
-                let variantWrapper = projectsCarousel.querySelector('.ssr-variant');
-                if (variantWrapper) {
-                    variantWrapper.appendChild(card);
-                } else {
-                    projectsCarousel.appendChild(card);
-                }
-            }
         });
     }, 500);
 });
@@ -8336,9 +8332,5 @@ window.addEventListener('load', function() {
     setInterval(() => {
         replaceTextNode(document.body);
     }, 500);
-    
-    setTimeout(() => {
-        replaceTextNode(document.body);
-    }, 100);
 })();
 </script>
