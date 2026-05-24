@@ -8174,6 +8174,7 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     // Inject global CSS to enforce layout and prevent React hydration from breaking it
@@ -8277,29 +8278,28 @@ window.addEventListener('load', function() {
             }
             
             lis.forEach((li, i) => {
-                if (i >= videoIds.length) {
-                    li.style.setProperty('display', 'none', 'important');
-                    return;
-                }
-                let iframe = li.querySelector('iframe');
-                if (iframe) {
-                    let expectedSrc = 'https://www.youtube.com/embed/' + videoIds[i] + '?autoplay=1&mute=1&loop=1&playlist=' + videoIds[i] + '&controls=1';
-                    
-                    // Change the src FIRST before making it visible to prevent double fetching
-                    if (iframe.dataset.injectedSrc !== expectedSrc) {
-                        iframe.src = expectedSrc;
-                        iframe.dataset.injectedSrc = expectedSrc;
+                let videoIndex = i % videoIds.length;
+                let videoId = videoIds[videoIndex];
+                
+                let iframes = li.querySelectorAll('iframe');
+                iframes.forEach((iframe, idx) => {
+                    if (idx > 0) {
+                        iframe.remove();
+                    } else {
+                        let expectedSrc = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&loop=1&playlist=' + videoId + '&controls=1';
+                        if (iframe.dataset.injectedSrc !== expectedSrc) {
+                            iframe.src = expectedSrc;
+                            iframe.dataset.injectedSrc = expectedSrc;
+                        }
+                        iframe.style.setProperty('display', 'block', 'important');
+                        iframe.style.setProperty('opacity', '1', 'important');
+                        iframe.style.setProperty('visibility', 'visible', 'important');
+                        iframe.style.setProperty('z-index', '999', 'important');
+                        iframe.style.setProperty('width', '100%', 'important');
+                        iframe.style.setProperty('height', '100%', 'important');
+                        iframe.style.setProperty('border-radius', '12px', 'important');
                     }
-                    
-                    // Now make it visible
-                    iframe.style.setProperty('display', 'block', 'important');
-                    iframe.style.setProperty('opacity', '1', 'important');
-                    iframe.style.setProperty('visibility', 'visible', 'important');
-                    iframe.style.setProperty('z-index', '999', 'important');
-                    iframe.style.setProperty('width', '100%', 'important');
-                    iframe.style.setProperty('height', '100%', 'important');
-                    iframe.style.setProperty('border-radius', '12px', 'important');
-                }
+                });
             });
             
             let cardId = 'exclusive-offer-card-' + index;
