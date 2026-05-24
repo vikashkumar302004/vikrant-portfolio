@@ -8164,70 +8164,76 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 }
 </style>
 
+
 <script>
 window.addEventListener('load', function() {
     setTimeout(() => {
         let carousels = document.querySelectorAll('div[data-framer-name="Projects Carousel"]');
+        let videoIds = ['3CFqZRUOt20', 'OSdH3bAWy8E', 'OpEXtkDVsiM', 'A-BArb92av8'];
         
         carousels.forEach((projectsCarousel, index) => {
-            let iframes = projectsCarousel.querySelectorAll('iframe[src*="youtube"]');
-            let articles = [];
-            iframes.forEach(iframe => {
-                let art = iframe.closest('article');
-                if (art && !articles.includes(art)) articles.push(art);
-            });
-
-            if (articles.length > 0) {
-                let firstArticle = articles[0];
-                
-                if (!firstArticle.hasAttribute('data-video-added')) {
-                    firstArticle.setAttribute('data-video-added', 'true');
-                    
-                    let iframe = firstArticle.querySelector('iframe');
-                    if (iframe) {
-                        iframe.src = 'https://www.youtube.com/embed/2xWIUDQCpWU?autoplay=1&mute=1&loop=1&playlist=2xWIUDQCpWU&controls=1';
-                        iframe.style.display = 'block'; 
-                        iframe.style.zIndex = '999';
-                    }
-                    let img = firstArticle.querySelector('img[src*="i.ytimg.com"]');
-                    if (img) img.style.display = 'none';
-                }
-                
-                for (let i = 1; i < articles.length; i++) {
-                    let cell = articles[i].closest('li') || articles[i];
-                    cell.style.display = 'none';
-                }
-                
-                projectsCarousel.querySelectorAll('.framer--carousel-controls, fieldset[aria-label="Carousel pagination controls"]').forEach(el => {
-                    el.style.display = 'none';
-                });
-                
-                let firstLi = firstArticle.closest('li');
-                if (firstLi) {
-                    firstLi.style.width = '100%';
-                    firstLi.style.minWidth = '300px';
-                    let ul = firstLi.closest('ul');
-                    if (ul) {
-                        ul.style.display = 'flex';
-                        ul.style.justifyContent = 'center';
-                    }
-                }
+            let ul = projectsCarousel.querySelector('ul');
+            if (!ul) return;
+            let lis = Array.from(ul.querySelectorAll('li'));
+            
+            // Ensure we have exactly 4 li elements
+            while (lis.length < videoIds.length && lis.length > 0) {
+                let clone = lis[lis.length - 1].cloneNode(true);
+                ul.appendChild(clone);
+                lis.push(clone);
             }
+            
+            // Now update the videos
+            lis.forEach((li, i) => {
+                if (i >= videoIds.length) {
+                    li.style.display = 'none';
+                    return;
+                }
+                li.style.display = 'block';
+                li.style.width = '250px';
+                li.style.minWidth = '250px';
+                li.style.height = '450px';
+                li.style.flexShrink = '0';
+                
+                let iframe = li.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = 'https://www.youtube.com/embed/' + videoIds[i] + '?autoplay=1&mute=1&loop=1&playlist=' + videoIds[i] + '&controls=1';
+                    iframe.style.display = 'block'; 
+                    iframe.style.zIndex = '999';
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.borderRadius = '12px';
+                }
+                let img = li.querySelector('img[src*="i.ytimg.com"]');
+                if (img) img.style.display = 'none';
+            });
+            
+            // Fix ul styling for a clean horizontal layout
+            ul.style.display = 'flex';
+            ul.style.flexDirection = 'row';
+            ul.style.overflowX = 'auto';
+            ul.style.gap = '20px';
+            ul.style.justifyContent = 'flex-start';
+            ul.style.padding = '10px 0';
+            
+            projectsCarousel.querySelectorAll('.framer--carousel-controls, fieldset[aria-label="Carousel pagination controls"]').forEach(el => {
+                el.style.display = 'none';
+            });
 
             let cardId = 'exclusive-offer-card-' + index;
             if (!document.getElementById(cardId)) {
                 let card = document.createElement('div');
                 card.id = cardId;
-                card.style.cssText = "background: #0a0a0a; border: 1px solid #333; border-radius: 20px; padding: 40px 20px; margin: 40px auto; width: 90%; max-width: 600px; text-align: center; font-family: Inter, sans-serif; color: white; position: relative; z-index: 10;";
-                card.innerHTML =                     '<div style="display:inline-block; border: 1px solid #D4AF37; color: #D4AF37; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">' +
+                card.style.cssText = "background: #0a0a0a; border: 1px solid #1e3a5f; border-radius: 20px; padding: 40px 20px; margin: 40px auto; width: 90%; max-width: 600px; text-align: center; font-family: Inter, sans-serif; color: white; position: relative; z-index: 10; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.15);";
+                card.innerHTML =                     '<div style="display:inline-block; border: 1px solid #0ea5e9; color: #0ea5e9; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px; background: rgba(14, 165, 233, 0.1);">' +
                         '✨ EXCLUSIVE OFFER' +
                     '</div>' +
                     '<h2 style="font-size: 32px; font-weight: 500; margin: 0 0 5px 0;">Your First Edit is</h2>' +
-                    '<h2 style="font-size: 32px; font-weight: 500; font-style: italic; color: #D4AF37; margin: 0 0 20px 0;">Absolutely Free</h2>' +
-                    '<p style="color: #999; font-size: 16px; line-height: 1.6; margin-bottom: 30px; font-weight: 300;">' +
+                    '<h2 style="font-size: 32px; font-weight: 500; font-style: italic; color: #0ea5e9; margin: 0 0 20px 0; text-shadow: 0 0 15px rgba(14, 165, 233, 0.4);">Absolutely Free</h2>' +
+                    '<p style="color: #a0aec0; font-size: 16px; line-height: 1.6; margin-bottom: 30px; font-weight: 300;">' +
                         'Experience the cinematic quality and retention-focused styling of VK Editorial at zero risk. Let us prove our value on your first project before you commit.' +
                     '</p>' +
-                    '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #D4AF37; color: #000; text-decoration: none; font-weight: bold; padding: 16px 32px; border-radius: 30px; font-size: 16px; transition: opacity 0.2s;">Claim Your Free Edit →</a>';
+                    '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #0ea5e9; color: #fff; text-decoration: none; font-weight: bold; padding: 16px 32px; border-radius: 30px; font-size: 16px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);">Claim Your Free Edit →</a>';
                 
                 projectsCarousel.parentNode.insertBefore(card, projectsCarousel.nextSibling);
             }
