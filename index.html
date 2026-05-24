@@ -8170,6 +8170,7 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     // Inject global CSS to enforce layout and prevent React hydration from breaking it
@@ -8210,6 +8211,10 @@ window.addEventListener('load', function() {
         div[data-framer-name="Projects Carousel"] .framer--carousel-controls,
         div[data-framer-name="Projects Carousel"] fieldset[aria-label="Carousel pagination controls"] {
             display: none !important;
+        }
+        /* Change all SVG symbols (like yellow bulbs) to Ocean Blue */
+        svg {
+            --21h8s6: #0ea5e9 !important;
         }
     `;
     document.head.appendChild(style);
@@ -8298,23 +8303,18 @@ window.addEventListener('load', function() {
                 return;
             }
 
-            let newText = text.replace(/Jubair Alam/gi, 'Vk editorial marketing agency')
-                              .replace(/Jubair/g, 'Vk editorial marketing agency')
-                              .replace(/jubair/g, 'vk editorial marketing agency')
-                              .replace(/JUBAIR/g, 'VK EDITORIAL MARKETING AGENCY')
-                              .replace(/Capcut/g, 'Blender')
-                              .replace(/capcut/g, 'blender')
-                              .replace(/Professional Editor/g, 'Professional marketing agency');
+            let newText = text.replace(/Vk editorial marketing agency/gi, 'VK Editorial')
+                              .replace(/VK EDITORIAL MARKETING AGENCY/gi, 'VK EDITORIAL')
+                              .replace(/Jubair Alam/gi, 'VK Editorial')
+                              .replace(/Jubair/gi, 'VK Editorial')
+                              .replace(/Capcut/gi, 'Blender')
+                              .replace(/Professional Editor/gi, 'Professional marketing agency');
             
-            let bio1 = "I'm Jubair Alam, a passionate Video Editor. I edit videos that actually bring results, blending creativity with strategy to elevate brands and creators.";
-            let bio2 = "I'm Vk editorial marketing agency, a passionate Video Editor. I edit videos that actually bring results, blending creativity with strategy to elevate brands and creators.";
-            let bio3 = "I'm VK EDITORIAL MARKETING AGENCY, a passionate Video Editor. I edit videos that actually bring results, blending creativity with strategy to elevate brands and creators.";
-            
-            if (newText.includes(bio1) || newText.includes(bio2) || newText.includes(bio3) || text.includes(bio1) || text.includes(bio2) || text.includes(bio3)) {
+            if (newText.includes('passionate Video Editor')) {
                 newText = "VK Editorial is an agency that specializes in video editing, motion graphics, VFX, and SFX, Cars Edit, Document edit, 3D Element, Blender services.";
             }
             
-            if (newText === "Hello, I’m Jubair Alam" || newText === "Hello, I’m Vk editorial marketing agency" || newText === "Hello, I'm Vk editorial marketing agency" || newText === "Hello, I’m VK EDITORIAL MARKETING AGENCY") {
+            if (/^Hello, I[’']m /i.test(newText) || newText === "Hello, I am VK Editorial") {
                 newText = "Hello";
             }
             
