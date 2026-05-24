@@ -8168,11 +8168,54 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
-
 <script>
 window.addEventListener('load', function() {
-    setTimeout(() => {
-        // Hide any old YouTube videos outside the carousels
+    // Inject global CSS to enforce layout and prevent React hydration from breaking it
+    let style = document.createElement('style');
+    style.textContent = `
+        div[data-framer-name="Projects Carousel"] img[src*="i.ytimg.com"] {
+            display: none !important;
+        }
+        div[data-framer-name="Projects Carousel"] iframe {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 999 !important;
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 12px !important;
+        }
+        div[data-framer-name="Projects Carousel"] ul {
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: auto !important;
+            gap: 20px !important;
+            justify-content: flex-start !important;
+            padding: 10px 0 !important;
+        }
+        div[data-framer-name="Projects Carousel"] li {
+            display: block !important;
+            width: 250px !important;
+            min-width: 250px !important;
+            height: 450px !important;
+            flex-shrink: 0 !important;
+        }
+        div[data-framer-name="Projects Carousel"] article {
+            width: 100% !important;
+            height: 100% !important;
+            position: relative !important;
+        }
+        div[data-framer-name="Projects Carousel"] .framer--carousel-controls,
+        div[data-framer-name="Projects Carousel"] fieldset[aria-label="Carousel pagination controls"] {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+    let videoIds = ['3CFqZRUOt20', 'OSdH3bAWy8E', 'OpEXtkDVsiM', 'A-BArb92av8'];
+    
+    setInterval(() => {
+        // Hide old videos
         document.querySelectorAll('iframe[src*="youtube"]').forEach(iframe => {
             if (!iframe.closest('div[data-framer-name="Projects Carousel"]')) {
                 let container = iframe.closest('article') || iframe.closest('div');
@@ -8181,44 +8224,29 @@ window.addEventListener('load', function() {
         });
 
         let carousels = document.querySelectorAll('div[data-framer-name="Projects Carousel"]');
-        let videoIds = ['3CFqZRUOt20', 'OSdH3bAWy8E', 'OpEXtkDVsiM', 'A-BArb92av8'];
-        
         carousels.forEach((projectsCarousel, index) => {
-            let variantWrapper = projectsCarousel.querySelector('.ssr-variant');
-            if (!variantWrapper) return;
+            let ul = projectsCarousel.querySelector('ul');
+            if (!ul) return;
+            let lis = Array.from(ul.querySelectorAll('li'));
             
-            // Instead of display: none which crashes React/Framer, we make it invisible but keep it in DOM
-            let originalSection = variantWrapper.querySelector('section');
-            if (originalSection) {
-                originalSection.style.position = 'absolute';
-                originalSection.style.opacity = '0';
-                originalSection.style.pointerEvents = 'none';
-                originalSection.style.zIndex = '-9999';
+            while (lis.length < videoIds.length && lis.length > 0) {
+                let clone = lis[lis.length - 1].cloneNode(true);
+                ul.appendChild(clone);
+                lis.push(clone);
             }
             
-            let customCarouselId = 'custom-carousel-' + index;
-            if (!document.getElementById(customCarouselId)) {
-                let myCarousel = document.createElement('div');
-                myCarousel.id = customCarouselId;
-                myCarousel.style.cssText = 'display: flex; flex-direction: row; overflow-x: auto; gap: 20px; padding: 10px 0; width: 100%; position: relative; z-index: 5;';
-                
-                videoIds.forEach(id => {
-                    let li = document.createElement('div');
-                    li.style.cssText = 'width: 250px; min-width: 250px; height: 450px; flex-shrink: 0; position: relative;';
-                    
-                    let iframe = document.createElement('iframe');
-                    iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&mute=1&loop=1&playlist=' + id + '&controls=1';
-                    iframe.style.cssText = 'width: 100%; height: 100%; border-radius: 12px; border: none;';
-                    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                    iframe.allowFullscreen = true;
-                    
-                    li.appendChild(iframe);
-                    myCarousel.appendChild(li);
-                });
-                
-                variantWrapper.appendChild(myCarousel);
-            }
-
+            lis.forEach((li, i) => {
+                if (i >= videoIds.length) {
+                    li.style.display = 'none !important';
+                    return;
+                }
+                let iframe = li.querySelector('iframe');
+                let expectedSrc = 'https://www.youtube.com/embed/' + videoIds[i] + '?autoplay=1&mute=1&loop=1&playlist=' + videoIds[i] + '&controls=1';
+                if (iframe && iframe.src !== expectedSrc) {
+                    iframe.src = expectedSrc;
+                }
+            });
+            
             let cardId = 'exclusive-offer-card-' + index;
             if (!document.getElementById(cardId)) {
                 let card = document.createElement('div');
@@ -8235,10 +8263,15 @@ window.addEventListener('load', function() {
                     '</p>' +
                     '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #0ea5e9; color: #fff; text-decoration: none; font-weight: bold; padding: 16px 32px; border-radius: 30px; font-size: 16px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);">Claim Your Free Edit →</a>';
                 
-                variantWrapper.appendChild(card);
+                let variantWrapper = projectsCarousel.querySelector('.ssr-variant');
+                if (variantWrapper) {
+                    variantWrapper.appendChild(card);
+                } else {
+                    projectsCarousel.appendChild(card);
+                }
             }
         });
-    }, 1500);
+    }, 500);
 });
 
 (function() {
@@ -8309,7 +8342,3 @@ window.addEventListener('load', function() {
     }, 100);
 })();
 </script>
-</body>
-
-
-</html>
