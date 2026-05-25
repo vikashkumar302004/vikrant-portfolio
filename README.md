@@ -1,92 +1,115 @@
-# VK Editorial Agency - Portfolio Website 🎬
-
-A high-performance, responsive, and ultra-dynamic portfolio website custom-built for **VK Editorial Agency**. This project showcases premium video editing, motion graphics, VFX, SFX, and 3D Blender services. 
-
 <div align="center">
-  <img src="https://img.shields.io/badge/Developer-Vikash_Kumar-0ea5e9?style=for-the-badge&logo=github" alt="Vikash Kumar" />
-  <img src="https://img.shields.io/badge/Client-VK_Editorial_Agency-black?style=for-the-badge" alt="VK Editorial" />
-  <img src="https://img.shields.io/badge/Status-Live-success?style=for-the-badge" alt="Status" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0ea5e9&height=200&section=header&text=VK%20Editorial&fontSize=60&fontAlignY=35&desc=Premium%20Video%20Editing%20Agency&descAlignY=55&descAlign=50" />
 </div>
 
----
+<h1 align="center">VK Editorial Agency - Portfolio Platform 🎬</h1>
+
+<div align="center">
+  <a href="https://github.com/vikashkumar302004"><img src="https://img.shields.io/badge/Developed%20By-Vikash_Kumar-0ea5e9?style=for-the-badge&logo=github" alt="Vikash Kumar" /></a>
+  <img src="https://img.shields.io/badge/Client-VK_Editorial_Agency-black?style=for-the-badge" alt="VK Editorial" />
+  <img src="https://img.shields.io/badge/Status-Live_&_Optimized-success?style=for-the-badge" alt="Status" />
+</div>
+
+<br/>
 
 ## 👨‍💻 About The Developer
-**Developed by:** [Vikash Kumar](https://github.com/vikashkumar302004)  
-I am a freelance software developer, and this repository contains the finalized and highly optimized codebase developed as a freelance project for **VK Editorial Agency**. 
+
+This highly optimized portfolio platform was engineered as a **freelance project** for **VK Editorial Agency** by **Vikash Kumar** ([@vikashkumar302004](https://github.com/vikashkumar302004)). 
+
+As a freelance software developer, I was tasked with taking a static UI, deeply optimizing its performance, integrating dynamic YouTube video carousels without React hydration conflicts, and globally rebranding the interface for a seamless, lag-free user experience.
 
 ---
 
-## 🛠️ Tech Stack Used
+## 🛠️ Technology Stack
 
-- **UI & Layout:** Framer (Static DOM Generation)
-- **Styling:** Vanilla CSS, CSS Flexbox/Grid, Dynamic CSS Variables (`var(--21h8s6)`)
-- **Logic & Scripting:** Vanilla JavaScript (ES6+), DOM Manipulation, MutationObservers
-- **Media Delivery:** YouTube Iframe API (Optimized lazy loading for heavy videos)
-- **Deployment:** Vercel
+<div align="center">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/Framer-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
+</div>
 
 ---
 
 ## 🏗️ System Architecture & DOM Flow
 
-Below is the technical flowchart demonstrating how the static site hydrates and dynamically updates the DOM to ensure optimal performance without layout shifting:
+The platform relies on a sophisticated client-side hydration engine that manipulates the DOM in real-time. Here is the architectural flow:
 
 ```mermaid
 graph TD
-    A[Client Browser] -->|HTTP Request| B(Vercel Edge Network)
-    B -->|Serves Static Files| C[index.html & CSS]
+    classDef highlight fill:#0ea5e9,stroke:#000,stroke-width:2px,color:#fff;
+    classDef server fill:#1e293b,stroke:#0ea5e9,stroke-width:2px,color:#fff;
+    classDef browser fill:#0f172a,stroke:#64748b,stroke-width:1px,color:#fff;
+
+    A([🌍 Client Request]) -->|HTTPS| B[⚡ Vercel Edge Network]:::server
+    B -->|Serves Static Build| C[DOM & Base Styles]:::browser
     
-    subgraph Client-Side Execution
-    C --> D{React/Framer Hydration}
-    D -->|Initial DOM Load| E[MutationObserver Starts]
-    E -->|Detects DOM Changes| F[Text Replacement Engine]
-    E -->|Carousel Found| G[Video Injection Engine]
-    
-    F -->|Replaces old placeholders| H[VK Editorial Branding Injected]
-    G -->|Filters visible SSR Variants| I[YouTube Iframes Injected]
-    I -->|Autoplay & Loop| J[Dynamic Video Carousel]
+    subgraph Client-Side Engine
+        C --> D{JavaScript Execution}
+        D -->|Bootstraps| E[MutationObserver]
+        D -->|Initializes| F[Carousel Injector]
+        
+        E -->|Real-time scan| G[Text & Branding Replacement]
+        F -->|Identifies Breakpoints| H[Responsive Video Sync]
     end
-    
-    H --> K((Final Rendered UI))
-    J --> K
+
+    G --> I((✨ VK Editorial Branding)):::highlight
+    H --> J((🎬 YouTube Iframes Loaded)):::highlight
+```
+
+### 🔄 Dynamic Video Carousel Logic
+
+The carousel logic specifically handles server-side rendered (SSR) variants to avoid duplicate videos on mobile/desktop breakpoints:
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant DOM
+    participant Script
+    participant YouTube
+
+    Browser->>DOM: Loads Hidden/Visible SSR Carousel Variants
+    Script->>DOM: querySelectorAll('.ssr-variant')
+    Script->>Script: Filters out 'display: none' carousels
+    Script->>DOM: Clones elements for infinite scroll loop
+    Script->>YouTube: Fetches specific YouTube Video IDs
+    YouTube-->>DOM: Injects embedded responsive iframes
+    Note right of DOM: Videos autoplay, loop, and mute natively
 ```
 
 ---
 
-## ⚡ Features & Optimizations
-1. **Dynamic Text Replacement:** Uses `MutationObserver` to intercept DOM node additions and instantly rebrand placeholders to "VK Editorial" without any visible lag or CPU throttling.
-2. **Responsive Video Carousel Fix:** Intelligently scans multiple SSR (Server-Side Rendering) variants generated by Framer, filtering out hidden breakpoints to prevent dual-video rendering or audio overlap bugs.
-3. **Optimized Asset Loading:** Heavy assets like `ffmpeg.zip` and large `.mp4` files are explicitly `.gitignore`'d and `.vercelignore`'d, strictly keeping the repository under GitHub's 100MB limits.
-4. **Custom CSS Overrides:** Global injection of the custom "Ocean Blue" theme (`#0ea5e9`) applied seamlessly to SVG elements and deep-nested UI components.
+## ⚡ Key Optimizations & Features
+
+- **Zero-Lag DOM Rebranding:** Utilizes advanced `MutationObserver` patterns to detect and replace text nodes in milliseconds without freezing the main thread.
+- **Responsive Video Injection:** A custom JavaScript engine accurately detects CSS media query breakpoints and applies the YouTube IFrame API strictly to the visible carousel, eliminating dual-render overlap bugs.
+- **Strict Version Control Size Limits:** Bloatware and heavy source videos (`.mp4`, `ffmpeg.zip`) are meticulously ignored via `.gitignore` and `.vercelignore` to bypass GitHub's 100MB object size limits and keep Vercel deployments blazing fast.
+- **Dynamic Theming:** Forcefully overrides third-party SVGs and CSS variables via JavaScript injection to enforce the brand's premium "Ocean Blue" identity (`#0ea5e9`).
 
 ---
 
-## 🚀 How to Run Locally
+## 🚀 Local Development Guide
 
-If you want to view or test this project on your local machine, follow these steps:
+To clone and run the optimized build locally:
 
-### 1. Clone the Repository
 ```bash
+# 1. Clone the repository
 git clone https://github.com/vikashkumar302004/vikrant-portfolio.git
+
+# 2. Enter the project directory
 cd vikrant-portfolio
-```
 
-### 2. Run a Local Server
-Since this is a vanilla JS/HTML project, you can use `serve` to host it locally without a complex build pipeline.
-
-```bash
-# If you don't have 'serve' installed, npx will download it automatically
+# 3. Start a local server (Requires Node.js)
 npx serve .
 ```
 
-### 3. View in Browser
-Open your browser and navigate to:  
-👉 **`http://localhost:3000`**
-
-*(Note: Always perform a Hard Refresh `Ctrl + Shift + R` to bypass cached versions of the `index.html` after modifying the JS).*
+Navigate to `http://localhost:3000` in your browser.  
+*(Pro-tip: Use **Ctrl + Shift + R** to hard refresh and bypass cached scripts when making changes).*
 
 ---
 
-## 🤝 Contribution
-- **Sole Contributor:** [vikashkumar302004](https://github.com/vikashkumar302004)
-
-> *"Building scalable, high-conversion interfaces for modern agencies."*
+<div align="center">
+  <p><i>Building scalable, high-conversion interfaces for modern agencies.</i></p>
+  <p><b>Copyright © 2026 | VK Editorial Agency | Developed by Vikash Kumar</b></p>
+</div>
