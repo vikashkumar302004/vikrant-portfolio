@@ -8268,9 +8268,11 @@ window.addEventListener('load', function() {
         let allCarousels = Array.from(document.querySelectorAll('div[data-framer-name="Projects Carousel"]'));
         
         let visibleCarousels = allCarousels.filter(c => {
+            // Only check inline or computed display style, avoid getBoundingClientRect() to prevent layout thrashing
+            if (c.style.display === 'none') return false;
             let style = window.getComputedStyle(c);
             if (style.display === 'none') return false;
-            return c.getBoundingClientRect().height > 0;
+            return true;
         });
         
         // Hide duplicates if they are visible
@@ -8343,7 +8345,7 @@ window.addEventListener('load', function() {
                 activeCarousel.appendChild(card);
             }
         }
-    }, 500);
+    }, 2000);
 });
 
 (function() {
