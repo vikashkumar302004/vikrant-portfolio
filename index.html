@@ -8305,18 +8305,48 @@ window.addEventListener('load', function() {
                     if (idx > 0) {
                         iframe.remove();
                     } else {
-                        let expectedSrc = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&loop=1&playlist=' + videoId + '&controls=1';
+                        let expectedSrc = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+                        
                         if (iframe.dataset.injectedSrc !== expectedSrc) {
-                            iframe.src = expectedSrc;
+                            // Ultra-lightweight YouTube Embed Trick (srcdoc)
+                            // This loads a simple image thumbnail instead of the full 1MB YouTube Player.
+                            // When clicked, it replaces itself with the actual autoplaying YouTube video.
+                            let srcDoc = `
+                            <style>
+                                * { padding:0; margin:0; overflow:hidden; }
+                                html, body { height: 100%; width: 100%; background: #000; }
+                                img, .play-button { position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto; }
+                                img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.3s; }
+                                img:hover { opacity: 1; }
+                                .play-button { 
+                                    width: 68px; height: 48px; background-color: #0ea5e9; 
+                                    border-radius: 10px; display: flex; justify-content: center; align-items: center;
+                                    box-shadow: 0 0 15px rgba(14, 165, 233, 0.5); transition: transform 0.2s;
+                                }
+                                .play-button:hover { transform: scale(1.1); background-color: #0284c7; }
+                                .play-button svg { width: 40px; height: 40px; fill: white; }
+                            </style>
+                            <a href="${expectedSrc}">
+                                <img src="https://i.ytimg.com/vi_webp/${videoId}/maxresdefault.webp" alt="Play Video">
+                                <div class="play-button">
+                                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </a>
+                            `;
+                            
+                            iframe.removeAttribute('src');
+                            iframe.srcdoc = srcDoc;
                             iframe.dataset.injectedSrc = expectedSrc;
+                            
+                            iframe.style.setProperty('display', 'block', 'important');
+                            iframe.style.setProperty('opacity', '1', 'important');
+                            iframe.style.setProperty('visibility', 'visible', 'important');
+                            iframe.style.setProperty('z-index', '999', 'important');
+                            iframe.style.setProperty('width', '100%', 'important');
+                            iframe.style.setProperty('height', '100%', 'important');
+                            iframe.style.setProperty('border-radius', '12px', 'important');
+                            iframe.style.setProperty('border', 'none', 'important');
                         }
-                        iframe.style.setProperty('display', 'block', 'important');
-                        iframe.style.setProperty('opacity', '1', 'important');
-                        iframe.style.setProperty('visibility', 'visible', 'important');
-                        iframe.style.setProperty('z-index', '999', 'important');
-                        iframe.style.setProperty('width', '100%', 'important');
-                        iframe.style.setProperty('height', '100%', 'important');
-                        iframe.style.setProperty('border-radius', '12px', 'important');
                     }
                 });
             });
