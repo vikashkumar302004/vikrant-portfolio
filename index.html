@@ -87,23 +87,30 @@
         }
 
         /* Pure CSS premium fade-in and slide-up animation for the main hero headline */
-        @keyframes customHeroFadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(20px) scale(0.98);
-                filter: blur(4px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
+        
+        /* Force hero text and subtext to be 100% visible immediately, no laggy fade-ins */
+        .framer-1wqlnff, .framer-14oc2jn span, .framer-tque6g div {
+            opacity: 1 !important;
+            filter: none !important;
+            transform: none !important;
+            animation: none !important;
         }
-        .framer-1wqlnff {
-            opacity: 0;
-            animation: customHeroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards !important;
+        /* Remove the conic gradient that makes part of the text dark */
+        span[data-text-fill="true"] {
+            background-image: none !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
-</style>
+
+
+        /* Force all elements to be visible */
+        [style*="opacity:0.001"], [style*="opacity: 0.001"] {
+            opacity: 1 !important;
+            filter: none !important;
+            animation: none !important;
+        }
+        </style>
+    
 
     <meta charset="utf-8">
 
