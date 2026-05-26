@@ -5558,6 +5558,96 @@
 </head>
 
 <body>
+
+    <!-- PREMIUM SPLASH SCREEN START -->
+    <style>
+        #vk-splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            z-index: 999999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+        }
+        #vk-splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .vk-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .vk-loader-text {
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            position: relative;
+        }
+        .vk-loader-text span {
+            color: #0ea5e9;
+        }
+        .vk-progress-bar {
+            width: 120px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .vk-progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: #0ea5e9;
+            box-shadow: 0 0 10px #0ea5e9;
+            animation: progressAnim 1.5s ease-out forwards;
+        }
+        @keyframes progressAnim {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+    </style>
+    <div id="vk-splash-screen">
+        <div class="vk-logo-container">
+            <div class="vk-loader-text">VK<span>.</span></div>
+            <div class="vk-progress-bar">
+                <div class="vk-progress-fill"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // When everything finishes loading, fade out the splash screen
+        window.addEventListener('load', function() {
+            // Add a small delay to ensure React has fully hydrated the DOM
+            setTimeout(function() {
+                const splash = document.getElementById('vk-splash-screen');
+                if (splash) {
+                    splash.classList.add('fade-out');
+                    // Remove from DOM after transition completes to save memory
+                    setTimeout(() => splash.remove(), 800);
+                }
+            }, 800); // 800ms gives Framer enough time to process its animations
+        });
+        
+        // Fallback: If 'load' event doesn't fire or takes too long, force remove it after 4 seconds
+        setTimeout(function() {
+            const splash = document.getElementById('vk-splash-screen');
+            if (splash && !splash.classList.contains('fade-out')) {
+                splash.classList.add('fade-out');
+                setTimeout(() => splash.remove(), 800);
+            }
+        }, 4000);
+    </script>
+    <!-- PREMIUM SPLASH SCREEN END -->
+
     <script async src="https://events.framer.com/script?v=2" data-fid="6070310ae22f27d1108f827fe251709cbf45baf5be44ff5871d4a5e0a749eb97" data-no-nt></script>
     <!-- Start of bodyStart -->
 
