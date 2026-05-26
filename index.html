@@ -107,6 +107,82 @@
 
     <meta charset="utf-8">
 
+    <script>
+    (function() {
+        function processText(text) {
+            if (!text) return text;
+            let textLower = text.toLowerCase();
+            let hasTarget = textLower.includes('agencyvision@gmail.com') || 
+                            textLower.includes('jubairvision@gmail.com') || 
+                            textLower.includes('vijaypantt3@gamil.com') ||
+                            textLower.includes('jubair') ||
+                            textLower.includes('capcut') ||
+                            textLower.includes('professional editor') ||
+                            textLower.includes('passionate video editor') ||
+                            textLower.includes('hello, i') ||
+                            textLower.includes('vk editorial');
+
+            if (!hasTarget) return text;
+
+            if (textLower.includes('agencyvision@gmail.com') || textLower.includes('jubairvision@gmail.com') || textLower.includes('vijaypantt3@gamil.com')) {
+                return 'Vijaypantt3@gamil.com';
+            }
+
+            let newText = text.replace(/Vk editorial marketing agency/gi, 'VK Editorial')
+                              .replace(/VK EDITORIAL MARKETING AGENCY/gi, 'VK EDITORIAL')
+                              .replace(/Jubair Alam/gi, 'VK Editorial')
+                              .replace(/Jubair/gi, 'VK Editorial')
+                              .replace(/Capcut/gi, 'Blender')
+                              .replace(/Professional Editor/gi, 'Professional marketing agency');
+            
+            if (newText.toLowerCase().includes('passionate video editor')) {
+                newText = "VK Editorial is an agency that specializes in video editing, motion graphics, VFX, and SFX, Cars Edit, Document edit, 3D Element, Blender services.";
+            }
+            
+            if (/^Hello, I[’']m /i.test(newText) || newText === "Hello, I am VK Editorial" || /^Hello, I[’']m /i.test(text)) {
+                newText = "Hello";
+            }
+            
+            return newText;
+        }
+
+        const originalCreateTextNode = document.createTextNode;
+        document.createTextNode = function(data) {
+            if (typeof data === 'string') {
+                data = processText(data);
+            }
+            return originalCreateTextNode.call(this, data);
+        };
+
+        const originalNodeValue = Object.getOwnPropertyDescriptor(Node.prototype, 'nodeValue');
+        if (originalNodeValue) {
+            Object.defineProperty(Node.prototype, 'nodeValue', {
+                get: originalNodeValue.get,
+                set: function(value) {
+                    if (typeof value === 'string') {
+                        value = processText(value);
+                    }
+                    originalNodeValue.set.call(this, value);
+                }
+            });
+        }
+
+        const originalTextContent = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
+        if (originalTextContent) {
+            Object.defineProperty(Node.prototype, 'textContent', {
+                get: originalTextContent.get,
+                set: function(value) {
+                    if (typeof value === 'string') {
+                        value = processText(value);
+                    }
+                    originalTextContent.set.call(this, value);
+                }
+            });
+        }
+    })();
+    </script>
+
+
 
     <script>
         try {
@@ -8307,6 +8383,22 @@ window.addEventListener('load', function() {
             }
         }
         
+        
+        // Fast link patching
+        let links = document.querySelectorAll('a');
+        links.forEach(a => {
+            let t = a.textContent ? a.textContent.trim().toLowerCase() : '';
+            if (t.includes('contact me') || t === 'contact') {
+                if (a.href !== 'https://wa.me/918272062017') {
+                    a.href = 'https://wa.me/918272062017';
+                    a.target = '_blank';
+                }
+            }
+            if (a.href && a.href.includes('instagram.com') && !a.href.includes('vk.editorial_')) {
+                a.href = 'https://www.instagram.com/vk.editorial_?igsh=MTJyZXBjdmVpOHRoaQ%3D%3D&utm_source=qr';
+            }
+        });
+    
         let activeCarousel = visibleCarousels[visibleCarousels.length - 1] || allCarousels[allCarousels.length - 1];
         if (!activeCarousel) return;
 
@@ -8317,10 +8409,9 @@ window.addEventListener('load', function() {
             
             while (lis.length < videoIds.length && lis.length > 0) {
                 let clone = lis[lis.length - 1].cloneNode(true);
-                // Temporarily disconnect observer to prevent tracking cloning
-                if (window.__vk_observer) window.__vk_observer.disconnect();
+                
                 ul.appendChild(clone);
-                if (window.__vk_observer) window.__vk_observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+                
                 lis.push(clone);
             }
             
@@ -8331,9 +8422,9 @@ window.addEventListener('load', function() {
                 let iframes = li.querySelectorAll('iframe');
                 iframes.forEach((iframe, idx) => {
                     if (idx > 0) {
-                        if (window.__vk_observer) window.__vk_observer.disconnect();
+                        
                         iframe.remove();
-                        if (window.__vk_observer) window.__vk_observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+                        
                     } else {
                         let expectedSrc = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
                         
@@ -8396,123 +8487,16 @@ window.addEventListener('load', function() {
                 '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #0ea5e9; color: #fff; text-decoration: none; font-weight: bold; padding: 16px 32px; border-radius: 30px; font-size: 16px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);">Claim Your Free Edit →</a>';
             
             let variantWrapper = Array.from(activeCarousel.querySelectorAll('.ssr-variant')).find(v => window.getComputedStyle(v).display !== 'none');
-            if (window.__vk_observer) window.__vk_observer.disconnect();
+            
             if (variantWrapper) {
                 variantWrapper.appendChild(card);
             } else {
                 activeCarousel.appendChild(card);
             }
-            if (window.__vk_observer) window.__vk_observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+            
         }
     }, 2000);
 });
 
-(function() {
-    function replaceTextNode(node) {
-        if (!node) return;
-        if (node.__vk_processed) return;
-
-        if (node.nodeType === Node.TEXT_NODE) {
-            let text = node.textContent;
-            if (!text) return;
-            
-            let textLower = text.toLowerCase();
-            let hasTarget = textLower.includes('agencyvision@gmail.com') || 
-                            textLower.includes('jubairvision@gmail.com') || 
-                            textLower.includes('vijaypantt3@gamil.com') ||
-                            textLower.includes('jubair') ||
-                            textLower.includes('capcut') ||
-                            textLower.includes('professional editor') ||
-                            textLower.includes('passionate video editor') ||
-                            textLower.includes('hello, i') ||
-                            textLower.includes('vk editorial');
-
-            if (!hasTarget) return;
-
-            if (textLower.includes('agencyvision@gmail.com') || textLower.includes('jubairvision@gmail.com') || textLower.includes('vijaypantt3@gamil.com')) {
-                node.textContent = 'Vijaypantt3@gamil.com';
-                return;
-            }
-
-            let newText = text.replace(/Vk editorial marketing agency/gi, 'VK Editorial')
-                              .replace(/VK EDITORIAL MARKETING AGENCY/gi, 'VK EDITORIAL')
-                              .replace(/Jubair Alam/gi, 'VK Editorial')
-                              .replace(/Jubair/gi, 'VK Editorial')
-                              .replace(/Capcut/gi, 'Blender')
-                              .replace(/Professional Editor/gi, 'Professional marketing agency');
-            
-            if (newText.toLowerCase().includes('passionate video editor')) {
-                newText = "VK Editorial is an agency that specializes in video editing, motion graphics, VFX, and SFX, Cars Edit, Document edit, 3D Element, Blender services.";
-            }
-            
-            if (/^Hello, I[’']m /i.test(newText) || newText === "Hello, I am VK Editorial" || /^Hello, I[’']m /i.test(text)) {
-                newText = "Hello";
-            }
-            
-            if (newText !== text) {
-                node.textContent = newText;
-            }
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            let tagName = node.tagName;
-            if (tagName === 'SCRIPT' || tagName === 'STYLE' || tagName === 'SVG' || tagName === 'PATH' || tagName === 'IFRAME' || tagName === 'VIDEO' || tagName === 'IMG') {
-                return;
-            }
-            
-            node.__vk_processed = true;
-            
-            if (tagName === 'A') {
-                let href = node.href || '';
-                let t = node.textContent ? node.textContent.trim().toLowerCase() : '';
-                
-                if (t.includes('contact me') || t === 'contact') {
-                    node.href = 'https://wa.me/918272062017';
-                    node.target = '_blank';
-                }
-                
-                if (href.includes('instagram.com') && !href.includes('vk.editorial_')) {
-                    node.href = 'https://www.instagram.com/vk.editorial_?igsh=MTJyZXBjdmVpOHRoaQ%3D%3D&utm_source=qr';
-                }
-            }
-            
-            let children = node.childNodes;
-            let len = children.length;
-            for (let i = 0; i < len; i++) {
-                replaceTextNode(children[i]);
-            }
-        }
-    }
-
-    replaceTextNode(document.body);
-
-    const observer = new MutationObserver((mutations) => {
-        observer.disconnect();
-        let len = mutations.length;
-        for (let i = 0; i < len; i++) {
-            let mutation = mutations[i];
-            if (mutation.type === 'childList') {
-                let added = mutation.addedNodes;
-                let addedLen = added.length;
-                for (let j = 0; j < addedLen; j++) {
-                    replaceTextNode(added[j]);
-                }
-            } else if (mutation.type === 'characterData') {
-                replaceTextNode(mutation.target);
-            }
-        }
-        observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-    });
-
-    window.__vk_observer = observer;
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-
-    // Auto-shutdown the observer completely after 6 seconds to guarantee 0% idle CPU and absolute lag-free scrolling!
-    setTimeout(() => {
-        if (window.__vk_observer) {
-            window.__vk_observer.disconnect();
-            window.__vk_observer = null;
-            console.log('MutationObserver disconnected successfully to guarantee 0% idle CPU during scrolling.');
-        }
-    }, 6000);
-})();
 </script>
 <!-- VERCEL_FORCE_REDEPLOY_CLEAN_REVERT_2 -->
