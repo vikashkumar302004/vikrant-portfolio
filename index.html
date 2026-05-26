@@ -5393,7 +5393,7 @@
                         <div class="framer-1o2om4" data-framer-name="Nav Wrapper">
                             <div class="framer-1na3aaw" data-framer-name="Wrapper">
                                 <div class="framer-1sl9wn5" data-framer-component-type="RichTextContainer" style="--extracted-r6o4lv:rgb(255, 255, 255);--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;transform:none">
-                                    <p dir="auto" class="framer-text" style="--framer-font-size:18px;--framer-text-color:var(--extracted-r6o4lv, rgb(255, 255, 255))">VK EDITORIAL MARKETING AGENCY</p>
+                                    <p dir="auto" class="framer-text" style="--framer-font-size:18px;--framer-text-color:var(--extracted-r6o4lv, rgb(255, 255, 255))">VK Editorial</p>
                                 </div>
                             </div>
                             <div class="framer-h0ping" data-framer-name="Right container">
@@ -5451,7 +5451,7 @@
                         <div class="framer-1o2om4" data-framer-name="Nav Wrapper">
                             <div class="framer-1na3aaw" data-framer-name="Wrapper">
                                 <div class="framer-1sl9wn5" data-framer-component-type="RichTextContainer" style="--extracted-r6o4lv:rgb(255, 255, 255);--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;transform:none">
-                                    <p dir="auto" class="framer-text" style="--framer-font-size:18px;--framer-text-color:var(--extracted-r6o4lv, rgb(255, 255, 255))">VK EDITORIAL MARKETING AGENCY</p>
+                                    <p dir="auto" class="framer-text" style="--framer-font-size:18px;--framer-text-color:var(--extracted-r6o4lv, rgb(255, 255, 255))">VK Editorial</p>
                                 </div>
                                 <div class="framer-13zvvcx-container" data-framer-name="Mobile Menu Icon" name="Mobile Menu Icon">
                                     <div name="Mobile Menu Icon" class="framer-qg9d6 framer-q0ivfn framer-v-q0ivfn" data-framer-name="Default" data-highlight="true" tabindex="0">
@@ -8177,6 +8177,7 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
 <script>
 window.addEventListener('load', function() {
     // Inject global CSS to enforce layout and prevent React hydration from breaking it
@@ -8221,6 +8222,12 @@ window.addEventListener('load', function() {
         /* Change all SVG symbols (like yellow bulbs) to Ocean Blue */
         svg {
             --21h8s6: #0ea5e9 !important;
+        }
+        /* Force header logo text to render instantly as Ocean Blue and prevent white color flash */
+        .framer-1sl9wn5 p {
+            color: #0ea5e9 !important;
+            --framer-text-color: #0ea5e9 !important;
+            --extracted-r6o4lv: #0ea5e9 !important;
         }
         /* Force 'services' and 'Primary' badges (like process) to be ocean blue */
         div[data-framer-name="services"] p,
