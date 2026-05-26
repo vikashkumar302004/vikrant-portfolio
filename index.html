@@ -5567,7 +5567,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #050505; /* Deep rich black */
+            background-color: #000000;
             z-index: 999999;
             display: flex;
             justify-content: center;
@@ -5582,45 +5582,37 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
         .vk-loader-text {
             color: #ffffff;
             font-family: 'Inter', sans-serif;
-            font-size: 36px;
-            font-weight: 800;
-            letter-spacing: 6px;
-            animation: textPulse 2s infinite ease-in-out;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
             position: relative;
         }
         .vk-loader-text span {
             color: #0ea5e9;
         }
-        @keyframes textPulse {
-            0%, 100% { opacity: 0.6; text-shadow: 0 0 0px rgba(14,165,233,0); }
-            50% { opacity: 1; text-shadow: 0 0 25px rgba(14,165,233,0.6); }
-        }
         .vk-progress-bar {
-            width: 180px;
+            width: 120px;
             height: 2px;
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             overflow: hidden;
-            position: relative;
         }
         .vk-progress-fill {
-            position: absolute;
-            top: 0;
-            left: -50%;
-            width: 50%;
+            width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, #0ea5e9, #0ea5e9, transparent);
-            box-shadow: 0 0 15px #0ea5e9;
-            animation: sweepAnim 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #0ea5e9;
+            box-shadow: 0 0 10px #0ea5e9;
+            animation: progressAnim 1.5s ease-out forwards;
         }
-        @keyframes sweepAnim {
-            0% { left: -50%; }
-            100% { left: 100%; }
+        @keyframes progressAnim {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
         }
     </style>
     <div id="vk-splash-screen">
@@ -5632,15 +5624,20 @@
         </div>
     </div>
     <script>
+        // When everything finishes loading, fade out the splash screen
         window.addEventListener('load', function() {
+            // Add a small delay to ensure React has fully hydrated the DOM
             setTimeout(function() {
                 const splash = document.getElementById('vk-splash-screen');
                 if (splash) {
                     splash.classList.add('fade-out');
+                    // Remove from DOM after transition completes to save memory
                     setTimeout(() => splash.remove(), 800);
                 }
-            }, 800);
+            }, 800); // 800ms gives Framer enough time to process its animations
         });
+        
+        // Fallback: If 'load' event doesn't fire or takes too long, force remove it after 4 seconds
         setTimeout(function() {
             const splash = document.getElementById('vk-splash-screen');
             if (splash && !splash.classList.contains('fade-out')) {
