@@ -8175,6 +8175,8 @@ article img[src*="i.ytimg.com"], article button[aria-label="Play"] {
 
 
 
+
+
 <script>
 window.addEventListener('load', function() {
     // Inject global CSS to enforce layout and prevent React hydration from breaking it
@@ -8292,7 +8294,10 @@ window.addEventListener('load', function() {
             
             while (lis.length < videoIds.length && lis.length > 0) {
                 let clone = lis[lis.length - 1].cloneNode(true);
+                // Temporarily disconnect observer to prevent tracking cloning
+                if (window.__vk_observer) window.__vk_observer.disconnect();
                 ul.appendChild(clone);
+                if (window.__vk_observer) window.__vk_observer.observe(document.body, { childList: true, subtree: true, characterData: true });
                 lis.push(clone);
             }
             
@@ -8303,14 +8308,14 @@ window.addEventListener('load', function() {
                 let iframes = li.querySelectorAll('iframe');
                 iframes.forEach((iframe, idx) => {
                     if (idx > 0) {
+                        if (window.__vk_observer) window.__vk_observer.disconnect();
                         iframe.remove();
+                        if (window.__vk_observer) window.__vk_observer.observe(document.body, { childList: true, subtree: true, characterData: true });
                     } else {
                         let expectedSrc = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
                         
                         if (iframe.dataset.injectedSrc !== expectedSrc) {
                             // Ultra-lightweight YouTube Embed Trick (srcdoc)
-                            // This loads a simple image thumbnail instead of the full 1MB YouTube Player.
-                            // When clicked, it replaces itself with the actual autoplaying YouTube video.
                             let srcDoc = `
                             <style>
                                 * { padding:0; margin:0; overflow:hidden; }
@@ -8369,23 +8374,44 @@ window.addEventListener('load', function() {
                 '<a href="https://wa.me/918272062017" target="_blank" style="display: inline-block; background: #0ea5e9; color: #fff; text-decoration: none; font-weight: bold; padding: 16px 32px; border-radius: 30px; font-size: 16px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);">Claim Your Free Edit →</a>';
             
             let variantWrapper = Array.from(activeCarousel.querySelectorAll('.ssr-variant')).find(v => window.getComputedStyle(v).display !== 'none');
+            if (window.__vk_observer) window.__vk_observer.disconnect();
             if (variantWrapper) {
                 variantWrapper.appendChild(card);
             } else {
                 activeCarousel.appendChild(card);
             }
+            if (window.__vk_observer) window.__vk_observer.observe(document.body, { childList: true, subtree: true, characterData: true });
         }
     }, 2000);
 });
 
 (function() {
+    // Ultra-optimized replacement function
     function replaceTextNode(node) {
         if (!node) return;
+        
+        // Short-circuit if element already processed
+        if (node.__vk_processed) return;
+
         if (node.nodeType === Node.TEXT_NODE) {
             let text = node.textContent;
             if (!text) return;
             
-            if (text.includes('agencyvision@gmail.com') || text.includes('jubairvision@gmail.com') || text.includes('Vijaypantt3@gamil.com')) {
+            // Fast check if string contains anything we need to replace before doing regex or heavy tasks (fully case insensitive!)
+            let textLower = text.toLowerCase();
+            let hasTarget = textLower.includes('agencyvision@gmail.com') || 
+                            textLower.includes('jubairvision@gmail.com') || 
+                            textLower.includes('vijaypantt3@gamil.com') ||
+                            textLower.includes('jubair') ||
+                            textLower.includes('capcut') ||
+                            textLower.includes('professional editor') ||
+                            textLower.includes('passionate video editor') ||
+                            textLower.includes('hello, i') ||
+                            textLower.includes('vk editorial');
+
+            if (!hasTarget) return;
+
+            if (textLower.includes('agencyvision@gmail.com') || textLower.includes('jubairvision@gmail.com') || textLower.includes('vijaypantt3@gamil.com')) {
                 node.textContent = 'Vijaypantt3@gamil.com';
                 return;
             }
@@ -8397,11 +8423,11 @@ window.addEventListener('load', function() {
                               .replace(/Capcut/gi, 'Blender')
                               .replace(/Professional Editor/gi, 'Professional marketing agency');
             
-            if (newText.includes('passionate Video Editor')) {
+            if (newText.toLowerCase().includes('passionate video editor')) {
                 newText = "VK Editorial is an agency that specializes in video editing, motion graphics, VFX, and SFX, Cars Edit, Document edit, 3D Element, Blender services.";
             }
             
-            if (/^Hello, I[’']m /i.test(newText) || newText === "Hello, I am VK Editorial") {
+            if (/^Hello, I[’']m /i.test(newText) || newText === "Hello, I am VK Editorial" || /^Hello, I[’']m /i.test(text)) {
                 newText = "Hello";
             }
             
@@ -8409,9 +8435,16 @@ window.addEventListener('load', function() {
                 node.textContent = newText;
             }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
-            if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return;
+            let tagName = node.tagName;
+            // Instantly skip non-text holding tags and media/scripts to save massive CPU cycles
+            if (tagName === 'SCRIPT' || tagName === 'STYLE' || tagName === 'SVG' || tagName === 'PATH' || tagName === 'IFRAME' || tagName === 'VIDEO' || tagName === 'IMG') {
+                return;
+            }
             
-            if (node.tagName === 'A') {
+            // Mark element node as processed so we never visit it again in recursive walks
+            node.__vk_processed = true;
+            
+            if (tagName === 'A') {
                 let href = node.href || '';
                 let t = node.textContent ? node.textContent.trim().toLowerCase() : '';
                 
@@ -8425,27 +8458,41 @@ window.addEventListener('load', function() {
                 }
             }
             
-            let children = Array.from(node.childNodes);
-            for (let i = 0; i < children.length; i++) {
+            let children = node.childNodes;
+            let len = children.length;
+            for (let i = 0; i < len; i++) {
                 replaceTextNode(children[i]);
             }
         }
     }
 
+    // Run initial replacement instantly (before load, right when script is parsed)
     replaceTextNode(document.body);
 
+    // Ultra-optimized MutationObserver with batch processing and loop protection
     const observer = new MutationObserver((mutations) => {
+        // Disconnect to avoid observer self-triggering
         observer.disconnect();
-        mutations.forEach(mutation => {
+        
+        let len = mutations.length;
+        for (let i = 0; i < len; i++) {
+            let mutation = mutations[i];
             if (mutation.type === 'childList') {
-                mutation.addedNodes.forEach(node => replaceTextNode(node));
+                let added = mutation.addedNodes;
+                let addedLen = added.length;
+                for (let j = 0; j < addedLen; j++) {
+                    replaceTextNode(added[j]);
+                }
             } else if (mutation.type === 'characterData') {
                 replaceTextNode(mutation.target);
             }
-        });
+        }
+        
+        // Re-observe
         observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     });
 
+    window.__vk_observer = observer;
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 })();
 </script>
